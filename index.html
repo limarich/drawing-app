@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drawing App</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <section class="container">
+      <aside class="options">
+        <h1>Drawing App</h1>
+        <ul>
+          <li>
+            <input type="color" id="color-selector" />
+          </li>
+          <li>
+            <input type="range" id="line-width-selector" value="2" />
+          </li>
+          <li>
+            preencher
+            <input type="checkbox" id="fill-btn" />
+          </li>
+          <li>
+            <button id="undo-btn"><-</button>
+          </li>
+          <li>
+            <button id="redo-btn">-></button>
+          </li>
+          <li>
+            grade
+            <input type="checkbox" id="grid-selector" />
+          </li>
+          <li>
+            linha
+            <input type="checkbox" id="line-selector" />
+          </li>
+          <li>
+            <button id="clear-btn">apagar</button>
+          </li>
+        </ul>
+        <ul class="shapes">
+          <li class="option" id="brush">
+            <span>pincel</span>
+          </li>
+          <li class="option" id="line">
+            <span>Linha</span>
+          </li>
+          <li class="option" id="rect">
+            <span>Retângulo</span>
+          </li>
+          <li class="option" id="circle">
+            <span>Círculo</span>
+          </li>
+          <li class="option" id="triangle">
+            <span>Triangulo</span>
+          </li>
+          <li class="option" id="text">
+            <span>Texto</span>
+          </li>
+        </ul>
+      </aside>
+      <div class="draw-board">
+        <h1>Nome Aqui</h1>
+        <input type="text" class="float-input" id="float-input" />
+        <canvas
+          width="800"
+          height="500"
+          id="draw-board"
+          style="background: #fff; border-radius: 8px"
+        ></canvas>
+        <div class="coordinates" id="coordinates"></div>
+      </div>
+    </section>
+  </body>
+  <script src="./draw.js"></script>
+</html>
