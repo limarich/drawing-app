@@ -11,12 +11,15 @@ const undoBtn = document.getElementById("undo-btn");
 const redoBtn = document.getElementById("redo-btn");
 const options = document.querySelectorAll(".option");
 const floatInput = document.getElementById("float-input");
+const imageInput = document.getElementById("image-input");
+const saveBtn = document.getElementById("save-btn");
 
-let selectedOption = "brush";
+let selectedOption = "line";
 
 let snapshot;
 
-let isDrawing = false;
+let isDrawing = false,
+  isPressing = false;
 
 let previousMouseX,
   previousMouseY = 0;
@@ -26,6 +29,25 @@ let undoStack = [];
 let redoStack = [];
 
 undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+
+window.addEventListener("load", () => {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+});
+
+const saveCanvas = () => {
+  const a = document.createElement("a");
+  a.href = canvas.toDataURL();
+  a.download = "aaaa.png";
+  a.click();
+};
+
+const eraseArea = (e) => {
+  ctx.clearRect(e.offsetX, e.offsetY, 20, 20);
+  saveSnapshot();
+};
 
 const saveSnapshot = () => {
   undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
@@ -132,7 +154,6 @@ const initDraw = (e) => {
   snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
 };
 const finishDraw = (e) => {
-  isDrawing = false;
   if (selectedOption === "text") {
     drawText(e.offsetX, e.offsetY);
   }
@@ -143,9 +164,26 @@ const clearCanvas = () => {
   ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
 };
 
-canvas.addEventListener("mousemove", drawing);
-canvas.addEventListener("mousedown", initDraw);
-canvas.addEventListener("mouseup", finishDraw);
+canvas.addEventListener("mousemove", (e) => {
+  if (isPressing && selectedOption === "eraser") {
+    eraseArea(e);
+  } else {
+    drawing(e);
+  }
+});
+canvas.addEventListener("mousedown", (e) => {
+  isPressing = true;
+  if (selectedOption !== "eraser") {
+    initDraw(e);
+  }
+});
+canvas.addEventListener("mouseup", (e) => {
+  isPressing = false;
+  if (selectedOption !== "eraser") {
+    finishDraw(e);
+  }
+  isDrawing = false;
+});
 
 clearBtn.addEventListener("click", clearCanvas);
 
@@ -167,6 +205,22 @@ const redo = () => {
     ctx.putImageData(undoStack[undoStack.length - 1], 0, 0);
   }
 };
+
+const handleImage = (e) => {
+  const file = e.target.files[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = (e) => {
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+};
 redoBtn.addEventListener("click", redo);
 undoBtn.addEventListener("click", undo);
 
@@ -176,3 +230,5 @@ floatInput.addEventListener("focusout", (e) => {
     offsetY: previousMouseY,
   });
 });
+imageInput.addEventListener("change", handleImage);
+saveBtn.addEventListener("click", saveCanvas);

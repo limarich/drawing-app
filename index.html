@@ -58,17 +58,17 @@
           <li class="option" id="text">
             <span>Texto</span>
           </li>
+          <li class="option" id="eraser">
+            <span>borracha</span>
+          </li>
         </ul>
+        <input type="file" id="image-input" accept="image/*" />
+        <button id="save-btn">Salvar</button>
       </aside>
       <div class="draw-board">
         <h1>Nome Aqui</h1>
         <input type="text" class="float-input" id="float-input" />
-        <canvas
-          width="800"
-          height="500"
-          id="draw-board"
-          style="background: #fff; border-radius: 8px"
-        ></canvas>
+        <canvas id="draw-board" style="border-radius: 8px"></canvas>
         <div class="coordinates" id="coordinates"></div>
       </div>
     </section>
