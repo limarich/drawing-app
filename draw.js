@@ -13,16 +13,21 @@ const options = document.querySelectorAll(".option");
 const floatInput = document.getElementById("float-input");
 const imageInput = document.getElementById("image-input");
 const saveBtn = document.getElementById("save-btn");
+const fontFamilySelector = document.getElementById("font-family-selector");
+const fontSizeSelector = document.getElementById("font-size-selector");
+const boldSelector = document.getElementById("bold-selector");
+const fontSettings = document.getElementById("font-settings");
+const drawSettings = document.getElementById("draw-settings");
 
-let selectedOption = "line";
+let selectedOption = "brush",
+  bold = false;
 
 let snapshot;
 
 let isDrawing = false,
   isPressing = false;
 
-let previousMouseX,
-  previousMouseY = 0;
+let previousMouseX, previousMouseY, textX, textY;
 
 //history stacks for the undo and redo functionality
 let undoStack = [];
@@ -30,12 +35,17 @@ let redoStack = [];
 
 undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
 
-window.addEventListener("load", () => {
+const resizeCanvas = () => {
+  const minHeight = 400; // Defina a altura mínima desejada
+
   canvas.width = canvas.offsetWidth;
-  canvas.height = canvas.offsetHeight;
+  canvas.height = Math.max(canvas.offsetHeight, minHeight); // Use Math.max para garantir que a altura não seja menor que a altura mínima
   ctx.fillStyle = "#fff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-});
+};
+
+window.addEventListener("load", resizeCanvas);
+window.addEventListener("resize", resizeCanvas);
 
 const saveCanvas = () => {
   const a = document.createElement("a");
@@ -105,11 +115,13 @@ const drawLine = (e) => {
   ctx.lineTo(e.offsetX, e.offsetY);
   ctx.stroke();
 };
-const drawText = (x, y) => {
-  ctx.font = "30px Comic Sans MS";
-  ctx.fillStyle = "red";
-  ctx.textAlign = "center";
-  ctx.fillText(floatInput.value, x, y);
+const drawText = () => {
+  ctx.font = `${bold ? "bold" : ""} ${fontSizeSelector.value}px ${
+    fontFamilySelector.value
+  }`;
+  ctx.fillStyle = colorSelector.value;
+
+  ctx.fillText(floatInput.value, textX, textY);
   floatInput.style.display = "none";
   floatInput.value = "";
   isDrawing = false;
@@ -132,7 +144,6 @@ const drawing = (e) => {
   } else if (selectedOption === "triangle") {
     drawTriangle(e);
   } else if (selectedOption === "text") {
-    floatInput.style.display = "flex";
   }
 };
 
@@ -147,15 +158,23 @@ const initDraw = (e) => {
   ctx.fillStyle = colorSelector.value;
   isDrawing = true;
   if (selectedOption === "text") {
-    floatInput.style.left = e.pageX + "px";
-    floatInput.style.top = e.pageY + "px";
+    floatInput.style.left = e.offsetX + "px";
+    floatInput.style.top = e.offsetY + "px";
     floatInput.style.display = "inline-block";
+
+    floatInput.style.font = `${fontSizeSelector.value}px ${fontFamilySelector.value}`;
+    floatInput.style.color = colorSelector.value;
+    floatInput.style.fontWeight = bold ? "bold" : "regular";
+
+    textX = e.offsetX;
+    textY = e.offsetY;
+    selectedOption = "texting";
   }
   snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
 };
 const finishDraw = (e) => {
-  if (selectedOption === "text") {
-    drawText(e.offsetX, e.offsetY);
+  if (selectedOption === "texting") {
+    drawText();
   }
   saveSnapshot();
 };
@@ -190,19 +209,37 @@ clearBtn.addEventListener("click", clearCanvas);
 options.forEach((option) => {
   option.addEventListener("click", () => {
     selectedOption = option.id;
+    if (selectedOption === "text") {
+      drawSettings.style.display = "none";
+      fontSettings.style.display = "flex";
+    } else {
+      drawSettings.style.display = "flex";
+      fontSettings.style.display = "none";
+      bold = false;
+      boldSelector.style.border = "none";
+    }
   });
 });
 
 const undo = () => {
   if (undoStack.length > 0) {
     redoStack.push(undoStack.pop());
-    ctx.putImageData(undoStack[undoStack.length - 1], 0, 0);
+    redrawCanvas();
   }
 };
+
 const redo = () => {
   if (redoStack.length > 0) {
     undoStack.push(redoStack.pop());
+    redrawCanvas();
+  }
+};
+
+const redrawCanvas = () => {
+  if (undoStack.length > 0) {
     ctx.putImageData(undoStack[undoStack.length - 1], 0, 0);
+  } else {
+    clearCanvas();
   }
 };
 
@@ -226,9 +263,13 @@ undoBtn.addEventListener("click", undo);
 
 floatInput.addEventListener("focusout", (e) => {
   finishDraw({
-    offsetX: previousMouseX,
-    offsetY: previousMouseY,
+    offsetX: textX,
+    offsetY: textY,
   });
 });
 imageInput.addEventListener("change", handleImage);
 saveBtn.addEventListener("click", saveCanvas);
+boldSelector.addEventListener("click", () => {
+  bold = !bold;
+  boldSelector.style.border = bold ? "1px solid #fff" : "none";
+});

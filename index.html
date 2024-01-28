@@ -5,73 +5,141 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Drawing App</title>
     <link rel="stylesheet" href="./styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://unicons.iconscout.com/release/v4.0.8/css/line.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Honk&family=Rubik+Glitch+Pop&family=Workbench&display=swap"
+      rel="stylesheet"
+    />
+    <script src="./draw.js" defer></script>
   </head>
   <body>
+    <header>
+      <h1 class="file-name" id="file-name">Sem Nome</h1>
+      <ul class="actions">
+        <li>
+          <button id="undo-btn">
+            <i class="uil uil-corner-up-left"></i>
+          </button>
+        </li>
+        <li>
+          <button id="redo-btn">
+            <i class="uil uil-corner-up-right"></i>
+          </button>
+        </li>
+        <li>
+          <button id="clear-btn"><i class="uil uil-multiply"></i></button>
+        </li>
+      </ul>
+    </header>
     <section class="container">
-      <aside class="options">
-        <h1>Drawing App</h1>
+      <aside class="options left">
         <ul>
-          <li>
-            <input type="color" id="color-selector" />
+          <li class="option" id="brush">
+            <i class="uil uil-pen"></i>
+            <span>pincel</span>
           </li>
-          <li>
+          <li class="option" id="eraser">
+            <img src="./assets/eraser.svg" alt="apagar" />
+            <span>borracha</span>
+          </li>
+          <li class="option" id="line">
+            <i class="uil uil-line-alt"></i>
+            <span>Linha</span>
+          </li>
+          <li class="option" id="rect">
+            <i class="uil uil-square"></i>
+            <span>Retângulo</span>
+          </li>
+          <li class="option" id="triangle">
+            <i class="uil uil-triangle"></i>
+            <span>Triangulo</span>
+          </li>
+          <li class="option" id="circle">
+            <i class="uil uil-circle"></i>
+            <span>Círculo</span>
+          </li>
+          <li class="option" id="text">
+            <i class="uil uil-text-fields"></i>
+            <span>Texto</span>
+          </li>
+          <li class="option" id="image">
+            <i class="uil uil-image"></i>
+            <input type="file" id="image-input" accept="image/*" />
+          </li>
+        </ul>
+      </aside>
+      <div class="draw-board-container">
+        <input type="text" class="float-input" id="float-input" />
+        <canvas
+          id="draw-board"
+          style="border-radius: 8px; background-color: #fff"
+        ></canvas>
+        <div class="coordinates" id="coordinates"></div>
+      </div>
+      <aside class="right">
+        <ul>
+          <li id="draw-settings">
+            espessura do traço
             <input type="range" id="line-width-selector" value="2" />
+          </li>
+          <li class="font-settings" id="font-settings">
+            fonte
+            <select id="font-family-selector">
+              <option value="" disabled>Escolha uma fonte</option>
+              <option value="open-sans" style="font-family: sans-serif">
+                Sans-Serif
+              </option>
+              <option value="arial" style="font-family: Arial">Arial</option>
+              <option value="Times" style="font-family: Times">Times</option>
+              <option value="Rubik" style="font-family: Rubik">Rubik</option>
+              <option value="Comic Sans MS" style="font-family: Comic Sans MS">
+                Comic Sans MS
+              </option>
+              <option value="Workbench" style="font-family: Workbench">
+                Workbench
+              </option>
+              <option value="Honk" style="font-family: Honk">Honk</option>
+              <option
+                value="Rubik Glitch Pop"
+                style="font-family: Rubik Glitch Pop"
+              >
+                Rubik Glitch Pop
+              </option>
+            </select>
+            <select id="font-size-selector">
+              <option value="16">16</option>
+              <option value="24">24</option>
+              <option value="32">32</option>
+              <option value="48">48</option>
+            </select>
+            <i class="uil uil-bold" id="bold-selector"></i>
           </li>
           <li>
             preencher
             <input type="checkbox" id="fill-btn" />
           </li>
           <li>
-            <button id="undo-btn"><-</button>
-          </li>
-          <li>
-            <button id="redo-btn">-></button>
-          </li>
-          <li>
-            grade
+            grid
             <input type="checkbox" id="grid-selector" />
           </li>
           <li>
-            linha
-            <input type="checkbox" id="line-selector" />
-          </li>
-          <li>
-            <button id="clear-btn">apagar</button>
+            cor do desenho
+            <input type="color" id="color-selector" />
           </li>
         </ul>
-        <ul class="shapes">
-          <li class="option" id="brush">
-            <span>pincel</span>
-          </li>
-          <li class="option" id="line">
-            <span>Linha</span>
-          </li>
-          <li class="option" id="rect">
-            <span>Retângulo</span>
-          </li>
-          <li class="option" id="circle">
-            <span>Círculo</span>
-          </li>
-          <li class="option" id="triangle">
-            <span>Triangulo</span>
-          </li>
-          <li class="option" id="text">
-            <span>Texto</span>
-          </li>
-          <li class="option" id="eraser">
-            <span>borracha</span>
-          </li>
-        </ul>
-        <input type="file" id="image-input" accept="image/*" />
-        <button id="save-btn">Salvar</button>
+        <button id="save-btn" class="save-btn">
+          <i class="uil uil-save"></i>Salvar
+        </button>
       </aside>
-      <div class="draw-board">
-        <h1>Nome Aqui</h1>
-        <input type="text" class="float-input" id="float-input" />
-        <canvas id="draw-board" style="border-radius: 8px"></canvas>
-        <div class="coordinates" id="coordinates"></div>
-      </div>
     </section>
   </body>
-  <script src="./draw.js"></script>
 </html>
