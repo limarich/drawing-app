@@ -211,6 +211,13 @@ clearBtn.addEventListener("click", clearCanvas);
 options.forEach((option) => {
   option.addEventListener("click", () => {
     selectedOption = option.id;
+    options.forEach((option) => {
+      if (option.id === selectedOption) {
+        option.classList.add("selected");
+      } else {
+        option.classList.remove("selected");
+      }
+    });
     if (selectedOption === "text") {
       drawSettings.style.display = "none";
       fontSettings.style.display = "flex";

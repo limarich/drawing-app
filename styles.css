@@ -47,12 +47,14 @@ header .actions li button {
   justify-content: space-between;
   gap: 1rem;
   width: 100%;
+  height: 90vh;
   font-family: "Rubik";
 }
 .container aside {
   background-color: var(--black);
   max-width: 20%;
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -69,15 +71,23 @@ aside ul li {
   height: 3rem;
   border-bottom: 2px solid var(--white);
   display: flex;
-  gap: 1rem;
   align-items: center;
+  gap: 1rem;
 }
+
 .left ul li img {
   stroke: var(--white);
 }
 .right {
   align-self: flex-start;
   padding: 1rem 0.5rem 2rem;
+}
+.option {
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+}
+.option.selected {
+  background: var(--secondary);
 }
 .font-settings {
   display: none;
@@ -95,6 +105,8 @@ aside ul li {
   width: 100%;
   height: 100%;
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .draw-board-container #draw-board {
