@@ -155,21 +155,21 @@ const initDraw = (e) => {
 
   ctx.beginPath();
 
-  ctx.lineWidth = lineWidthSelector.value;
+  ctx.lineWidth = Math.max(1, parseFloat(lineWidthSelector.value));
   ctx.strokeStyle = colorSelector.value;
   ctx.fillStyle = colorSelector.value;
   isDrawing = true;
   if (selectedOption === "text") {
-    floatInput.style.left = e.offsetX + "px";
-    floatInput.style.top = e.offsetY + "px";
+    textX = e.offsetX;
+    textY = e.offsetY;
+    floatInput.style.left = textX + "px";
+    floatInput.style.top = textY + "px";
     floatInput.style.display = "inline-block";
 
     floatInput.style.font = `${fontSizeSelector.value}px ${fontFamilySelector.value}`;
     floatInput.style.color = colorSelector.value;
     floatInput.style.fontWeight = bold ? "bold" : "regular";
 
-    textX = e.offsetX;
-    textY = e.offsetY;
     selectedOption = "texting";
   }
   snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -184,6 +184,10 @@ const finishDraw = (e) => {
 const clearCanvas = () => {
   ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
 };
+
+lineWidthSelector.addEventListener("change", (e) => {
+  ctx.lineWidth = e.target.value;
+});
 
 canvas.addEventListener("mousemove", (e) => {
   if (isPressing && selectedOption === "eraser") {
