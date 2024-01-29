@@ -18,6 +18,8 @@ const fontSizeSelector = document.getElementById("font-size-selector");
 const boldSelector = document.getElementById("bold-selector");
 const fontSettings = document.getElementById("font-settings");
 const drawSettings = document.getElementById("draw-settings");
+const fileName = document.getElementById("file-name");
+const fileNameInput = document.getElementById("file-name-input");
 
 let selectedOption = "brush",
   bold = false;
@@ -50,7 +52,7 @@ window.addEventListener("resize", resizeCanvas);
 const saveCanvas = () => {
   const a = document.createElement("a");
   a.href = canvas.toDataURL();
-  a.download = "aaaa.png";
+  a.download = fileName.innerText + ".png";
   a.click();
 };
 
@@ -272,4 +274,14 @@ saveBtn.addEventListener("click", saveCanvas);
 boldSelector.addEventListener("click", () => {
   bold = !bold;
   boldSelector.style.border = bold ? "1px solid #fff" : "none";
+});
+fileName.addEventListener("click", () => {
+  fileNameInput.value = fileName.innerText;
+  fileNameInput.type = "text";
+  fileName.style.display = "none";
+});
+fileNameInput.addEventListener("focusout", () => {
+  fileName.innerText = fileNameInput.value;
+  fileNameInput.type = "hidden";
+  fileName.style.display = "inline";
 });
